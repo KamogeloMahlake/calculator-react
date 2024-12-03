@@ -1,0 +1,31 @@
+#root {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-items: center
+}
+
+#grid-container {
+  display: grid;
+  grid-template: 50px 50px 50px 50px 50px / 50px 50px 50px 50px;
+}
+#clear {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  text-align: center;
+}
+#zero {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  text-align: center;
+}
+#equals {
+  grid-column-start: 4;
+  grid-row-start: 4;
+  grid-row-end: 6;
+  text-align: center;
+}
+#display {
+  height: 50px;
+  text-align: end;
+}
