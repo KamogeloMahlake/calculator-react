@@ -27,20 +27,13 @@ const Button = ({value, id, className, click}) => {
   )
 }
 
-const answer = (equation) => {
-  let index = 0
-  
-  if (equation[0] === "-") {
-    equation = equation.replace(1, "");
-  } 
-  if (equation.includes("- -") || equation.includes("x -") || equation.includes("/ -") || equation.includes("+ -")) {
-    index = equation.indexOf("- -");
-    equation = equation.replace(index + 2, "");
-  }
+const answer = (equation) => {  
   const values = equation.trim().split(" ");
   while (["+", "-", "/", "x"].includes(values[values.length - 1])) {
     values.pop();
   }
+  
+  let index = 0
 
   const operators = ["x", "/", "+", "-"]
   for (const operator of operators) {
@@ -78,12 +71,14 @@ const answer = (equation) => {
       }
     }
   }
-  return values.join("");
+  return values.join("")
+  //return `${equation} = ${values.join("")}`;
 }
 class App extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      //formula: false,
       output: '0'
     };
     this.handleClick = this.handleClick.bind(this);
@@ -91,7 +86,6 @@ class App extends Component{
 
   handleClick({target}) {
     const currentButton = target;
-
     switch (currentButton.id) {
       case "clear":
         this.setState({
@@ -101,7 +95,8 @@ class App extends Component{
 
       case "equals":
         this.setState((prevState) => ({
-          output: answer(prevState.output)
+          output: answer(prevState.output),
+          //formula: true
         }));
         break;
 
@@ -119,26 +114,38 @@ class App extends Component{
         break;
 
       default:
+        /*if (this.state.formula) {
+          let valueIndex = this.state.output.split(" ").length -  1
+          this.setState((prevState) => ({
+            output: prevState.output.split(" ")[valueIndex],
+            formula: false
+          }))
+        }*/
         if (this.state.output === "0" && currentButton.textContent !== ".") {
           this.setState({
             output: currentButton.textContent
           });
           break;
         }
-
-        if (["+", "/", "x"].includes(this.state.output[this.state.output.length - 1])) {
-          if (["+", "/", "x"].includes(currentButton.textContent)) {
-            this.setState((prevState) => ({
-              output: prevState.output.slice(0, -1) + currentButton.textContent
-            }));
-            break;
-        }} else if ((this.state.output[this.state.output.length - 1] === "-" && this.state.output[this.state.output.length - 2] === "-")) {
-          /*if (["+", "/", "x", "-"].includes(currentButton.textContent)) {
-            break;
-        } else*/ if (currentButton.textContent === "-") {
+        if ((this.state.output[this.state.output.length - 1] === "-" || this.state.output[this.state.output.length - 2] === "-") && ["x", "+", "/", "-"].includes(currentButton.textContent)) {
+          this.setState((prevState) => ({
+            output: prevState.output.trim().replace(/[/x+]? -$/, `${currentButton.textContent} `)
+          }));
           break;
         }
-      } 
+        if (["+", "/", "x"].includes(this.state.output[this.state.output.length - 2])) {
+          if (["+", "/", "x"].includes(currentButton.textContent)) {
+            this.setState((prevState) => ({
+              output: prevState.output.trim().slice(0, -1) + currentButton.textContent + " "
+            }));
+            break;
+        } else if (currentButton.textContent === "-") {
+          this.setState((prevState) => ({
+            output: prevState.output + currentButton.textContent
+          }))
+          break;
+        }
+      }
 
         if (["x", "/", "-", "+"].includes(currentButton.textContent)) {
           this.setState((prevState) => ({
@@ -164,5 +171,4 @@ class App extends Component{
     )
   }
 }
-
 export default App;
