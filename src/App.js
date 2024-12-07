@@ -35,7 +35,7 @@ const answer = (equation) => {
   
   let index = 0
 
-  const operators = ["x", "/", "+", "-"]
+  const operators = ["x", "/", "-", "+"]
   for (const operator of operators) {
     while (values.includes(operator)) {
       switch (operator) {
